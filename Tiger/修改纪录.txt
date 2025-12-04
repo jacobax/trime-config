@@ -1,0 +1,83 @@
+#降频三角、降同手多连、降同手跨排、增加互击（大小码异手）
+#单根避三连，后置补韵母：革tge；补音母：弋：piy
+推荐加根键位:
+Cm、Lt
+拟加/改根:
+禹
+
+已加根:
+丸	cm
+司［局-尸］	ms
+[微：彳山一]	w
+[赢：亡口月]	f
+𢦏	nz
+畐	fl
+一田画	fh
+果	go
+介	dj
+凡	df
+肃肅	su
+卒	au
+离	sl
+㐫	sn
+凶	so
+戋	fj
+叟	so
+象	拆分为WtJs
+元	lr
+相	nx
+直	fi
+真	fj
+少	ia
+莫	ro
+爻	fm
+立	改为if
+卓龺【卜曰】	kr
+尞	ck
+尼	cn
+敫	kw
+扁	lr
+酋	cl
+亥	kf
+兼	ie
+【一曲】	f
+屯	fu
+屰	hn
+尤	os
+半	hc
+此	mv
+发	kf
+示	fk
+青	aj
+丂	ka
+曼	gl
+且	lx
+分	ro
+击	二山
+AAAa	AaAa
+欠	el
+囊头	ndw
+乑	ks
+隹	ue
+反	yt
+中	di
+户	mr
+土	gm
+杨	EAl
+不	cu
+某	cm
+北	ai
+丁	ay
+共	sn
+昔	lc
+乍	wi
+刃刄刅	fl
+父	fi
+殿	wn
+奄	fn
+角	bi
+解	bj
+禀	jw
+亶	jr
+尃	vk
+旉	vl
