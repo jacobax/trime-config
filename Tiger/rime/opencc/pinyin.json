@@ -1,0 +1,22 @@
+{
+  "name": "pinyin",
+  "segmentation": {
+    "type": "mmseg",
+    "dict": {
+      "type": "ocd",
+      "file": "PYPhrases.ocd"
+    }
+  },
+  "conversion_chain": [{
+    "dict": {
+      "type": "group",
+      "dicts": [{
+        "type": "ocd",
+        "file": "PYPhrases.ocd"
+      }, {
+        "type": "ocd",
+        "file": "PYCharacters.ocd"
+      }]
+    }
+  }]
+}
