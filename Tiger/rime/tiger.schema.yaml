@@ -1,0 +1,294 @@
+schema:
+  author:
+    - {}
+  dependencies:
+    - xhup
+    - core2022  #自定义字集工具方案
+  description: |
+    虎
+    敲 ` 鍵進入拼音反查    
+  name: "虎"
+  schema_id: tiger
+  version: 0.9
+
+switches:
+  - name: ascii_mode
+#    reset: 0
+    states: [CHN, ENG]
+  - name: simplification  #简转繁滤镜
+    reset: 0
+    states: [ SIM, TRA ]
+  - name: extended_char  #自定义字集
+    reset: 1
+    states: [ UNV , REG ]
+#  - name: chaifen    
+#    states: [ 拆隐, 拆显 ]     
+#    reset: 0
+#  - name: pinyin  #拼音滤镜
+#    reset: 0
+#    states: [ 拼, pīn ]
+#  - name: fanjian  #繁转简滤镜
+#    reset: 0
+#    states: [ 繁→简, 關閉 ]
+#  - name: dz_ci  #过滤词组
+#    reset: 0
+#    states: [ 字词, 单字 ] 
+  - name: full_shape
+    reset: 0
+    states: [🌙, 🌑]
+  - name: ascii_punct
+    states: [。，, ．，]
+  - options: [ _Keyboard_clip_script ]
+    states: [㊙️]
+
+
+engine:
+  processors:
+    - ascii_composer
+    - recognizer
+    - key_binder
+    - speller
+    - punctuator
+    - selector
+    - navigator
+    - express_editor
+  segmentors:
+    - ascii_segmentor
+    - matcher
+    - abc_segmentor
+    - punct_segmentor
+    - fallback_segmentor
+  translators:
+    - punct_translator
+    - reverse_lookup_translator
+    - table_translator
+#    - history_translator@historyDM # 历史上屏 电脑
+#    - history_translator@historySJ # 历史上屏 手机
+#    - history_translator@historyDM2 # 历史上屏 电脑2
+    - table_translator@tiger_zd	#自定义词库
+    - lua_translator@number_translator	#计算及小写转大写
+
+  filters:
+    - lua_filter@core2022  #自定义字集过
+#    - lua_filter@dz_ci  #过滤词组lua，单字模式
+    - simplifier@simplification  #简繁滤镜
+    - simplifier@fanjian  #繁简滤镜
+    - simplifier@pinyin  #拼音滤镜
+#    - reverse_lookup_filter@reverse_lookup  #comment显示指定方案编码
+    - uniquifier # 过滤重复
+    - simplifier@chaifen #拆分滤镜
+
+speller:
+  auto_clear: max_length # 3种选择， manual|auto|max_length 空码按下一键确认清屏|空码自动清|达到最长码时后码顶上清屏
+  auto_select: true
+  max_code_length: 4
+  alphabet: "zyxwvutsrqponmlkjihgfedcba"
+  # initials: "abcdefghijklmnopqrstuvwxyz;'"
+  auto_select_pattern: ^;\w+|^\w{4}$ #自动上屏规则 对 [;] 开头的编码实行候选唯一自动上屏 + 4码自动上屏
+
+translator:
+  dictionary: tiger
+  enable_charset_filter: false
+  enable_encoder: false
+  enable_sentence: false
+  encode_commit_history: false
+  max_phrase_length: 4
+  enable_user_dict: false
+  enable_completion: false	# 编码提示，改为false可关闭
+  comment_format:
+    - "xform/~/ /" #去掉编码提示前的~号
+
+tiger_zd:
+  dictionary: ""
+  user_dict: tiger_custom
+  db_class: stabledb
+  enable_sentence: false
+  enable_completion: false
+  initial_quality: 0 #用户词和系统词重码 置顶
+  comment_format:                       # 提示码自定义
+#    - xform/.+//                        # 配置：消除所有候选词后的提示码
+
+reverse_lookup:
+  dictionary: xhup
+  preedit_format:
+    - "xform/([nl])v/$1ü/"
+    - "xform/([nl])ue/$1üe/"
+    - "xform/([jqxy])v/$1u/"
+  prefix: "`"
+  suffix: "'"
+  tips: ""
+
+
+key_binder:
+  #  import_preset: default
+  bindings:
+#    - { accept: semicolon, send: 2, when: has_menu } # 分号次选
+#    - { when: has_menu, accept: apostrophe, send: 3 } # 引号三选
+#    - { when: has_menu, accept: Tab, send: Escape } # tab清屏
+#    - { when: has_menu, accept: minus, send: Page_Up } # - 向后翻页
+#    - { when: has_menu, accept: equal, send: Page_Down } # = 向前翻页
+    # - { when: has_menu, accept: bracketleft, send: Page_Up } # [ 后翻
+    # - { when: has_menu, accept: bracketright, send: Page_Down } # ] 前翻
+    - { accept: "Control+o", toggle: simplification, when: has_menu }  # 简繁开关
+    - { accept: "Control+Shift+O", toggle: fanjian, when: has_menu }  # 繁简开关
+    - { accept: "Control+p", toggle: pinyin, when: has_menu }  # PC 拼音开关
+    - { when: has_menu, accept: '*', toggle: simplification} # 手机 繁简开关
+    - { when: has_menu, accept: '%', toggle: pinyin} # 手机 拼音开关
+    - { when: has_menu, accept: Right, send: Down } # 右方向键 向后移动焦点
+    - { when: has_menu, accept: '~', toggle: chaifen } # 手机 拆分滤镜开关
+    - { when: has_menu, accept: Left, send: Up } # 左方向键 向前移动焦点
+    - { when: has_menu, accept: space, send: space }
+    - { when: composing, accept: space, send: Escape }
+    - { when: composing, accept: '_', toggle: extended_char} # 手机 自定字集开关1
+#    - { when: composing, accept: '|', toggle: dz_ci}
+
+recognizer:
+  import_preset: default
+  patterns:
+    punct: "^/([0-9]0?|[A-Za-z]+)$"
+    reverse_lookup: "^`[a-z]*'?$"
+    number: "^=.*$"
+
+ascii_composer:
+  switch_key:
+    Caps_Lock: clear
+    Control_L: noop
+    Control_R: noop
+    Eisu_toggle: clear
+    Shift_L: commit_code
+    Shift_R: commit_text
+
+menu:
+  page_size: 5 #候选数量
+  alternative_select_labels: [ ㊀, ㊁, ㊂, ㊃, ㊄, ㊅, ㊆, ㊇, ㊈ ]  #自定义候选序号显示符
+  
+style:
+  horizontal: false #横排显示
+
+historyDM2:
+  input: "'"
+  size: 1 #重复前几次上屏
+  initial_quality: -999
+
+
+historySJ:
+  input: "+"
+  size: 1
+  initial_quality: 0
+
+historyDM:
+  input: "["
+  size: 1
+  initial_quality: 999
+
+# 拆分滤镜
+chaifen:
+  opencc_config: hu_cf.json
+  option_name: chaifen
+  show_in_comment: true 
+  comment_format:
+    - "xform/&nbsp;·&nbsp;/ ≈ /"
+    - "xform/&nbsp;/; /"
+  tags:     
+    - abc
+    - reverse_lookup
+  tips: char  
+
+# ↓简繁滤镜
+simplification:
+  opencc_config: s2t.json        # 简 ➡ 繁（OpenCC标准）
+ # opencc_config: s2tw.json    # 简 ➡ 台湾正体
+ # opencc_config: s2hk.json    # 简 ➡ 香港繁体
+ # opencc_config: s2twp.json  # 简 ➡ 台湾正体（含常用词汇如：软体→軟體、鼠标→滑鼠）
+  option_name: simplification
+  tips: all  #all字词|char字
+
+# ↓繁简滤镜
+fanjian:
+  opencc_config: t2s.json   # 繁 ➡ 简（OpenCC标准）
+  option_name: fanjian
+
+# ↓拼音滤镜
+pinyin:
+  opencc_config: pinyin.json
+  option_name: pinyin
+  show_in_comment: true
+  comment_format:
+    - 'xform/&nbsp/ /'
+    - "xform/^/ /"
+  tips: all   
+  tags:  #设立tags是为了不影响反查
+    - abc
+    - tiger
+    - tigress
+    - onitiger
+
+punctuator:
+  import_preset: symbols
+  full_shape:
+    ' ' : { commit: '　' }
+    ',' : { commit: ， }
+    '.' : { commit: 。 }
+    '<' : 《
+    '>' : 》
+    '/' : [ ／, ÷ ]
+    '?' : { commit: ？ }
+    ';' : { commit: ； }
+    ':' : { commit: ： }
+    '''' : { pair: [ '‘', '’' ] }
+    '"' : { pair: [ '“', '”' ] }
+    '\' : 、
+    '|' : [ ·, ｜, '§', '¦' ]
+    '`' : ｀
+    '~' : ～
+    '!' : { commit: ！ }
+    '@' : ＠
+    '#' : ＃
+    '%' : [ ％, '°', '℃' ]
+    '$' : [ ￥, '$', '€', '£', '¥', '¢', '¤', ₩ ]
+    '^' : { commit: …… }
+    '&' : ＆
+    '*' : [ ＊, ·, ・, ×, ※, ❂ ]
+    '(' : （
+    ')' : ）
+    '-' : －
+    '_' : ——
+    '+' : ＋
+    '=' : ＝
+    '[' : 【
+    ']' : 】
+    '{' : ｛
+    '}' : ｝
+  half_shape:
+    ',' : { commit: ， }
+    '.' : { commit: 。 }
+    '<' : 《
+    '>' : 》
+    '/' : [ 、, ､, '/', ／, ÷ ]
+    '?' : { commit: ？ }
+    ';' : { commit: ； }
+    ':' : { commit: ： }
+    '''' : { pair: [ '‘', '’' ] }
+    '"' : { pair: [ '“', '”' ] }
+    '\' : 、
+    '|' : [ ·, ・, '|', ｜, '§', '¦', '‖', ︴ ]
+    '`' : [ '`', ‵, ‶, ‷, ′, ″, ‴, ⁗ ]
+    '~' : [ '~', ～, ˜, ˷, ⸯ, ≈, ≋, ≃, ≅, ≇, ∽, ⋍, ≌, ﹏, ﹋, ﹌, ︴ ]
+    '!' : { commit: ！ }
+    '@' : '@'
+    '#' : '#'
+    '%' : [ '%', ％, '°', '℃', ‰, ‱, ℉, ℅, ℆, ℀, ℁, ⅍ ]
+    '$' : [ ￥, '$', '€', '£', '¥', '¢', '¤', ₩ ]
+    '^' : { commit: …… }
+    '&' : '&'
+    '*' : [ '*', ＊, ·, ‧, ・, ･, ×, ※, ❂, ⁂, ☮, ☯, ☣ ]
+    '(' : （
+    ')' : ）
+    '-' : '-'
+    '_' : ——
+    '+' : '+'
+    '=' : =
+    '[' : 「
+    ']' : 」
+    '{' : ｛
+    '}' : ｝
