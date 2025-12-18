@@ -1,0 +1,16 @@
+{
+  "name": "hu_cf",
+  "segmentation": {
+    "type": "mmseg",
+    "dict": {
+      "type": "ocd",
+      "file": "hu_cf.ocd"
+    }
+  },
+  "conversion_chain": [{
+    "dict": {
+      "type": "ocd",
+      "file": "hu_cf.ocd"
+    }
+  }]
+}
