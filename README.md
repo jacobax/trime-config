@@ -4,7 +4,7 @@ An open-source, non-commercial configuration project for **RIME / Trime input me
 
 📄 中文说明请见： [README_CN.md](./README_CN.md)
 
-[HomePage](https://trime.qmqm.cf/) Under Construction ~
+[HomePage](https://arime.qmqm.cf/) Under Construction ~
 
 ---
 
